@@ -1,48 +1,60 @@
 import pygame
 
-WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
+WHITE = (255, 255, 255, 255)
+RED = (255, 0, 0, 255)
+GREEN = (0, 255, 0, 255)
 BLUE = (0, 0, 255)
-BLACK = (0, 0, 0)
+BLACK = (0, 0, 0, 255)
 YELLOW = (255, 255, 0)
 ORANGE = (255, 165, 0)
-fps = 50
-clock = pygame.time.Clock()
 
 
 class Board:
-    # создание поля
     def __init__(self, width, height):
         self.width = width
         self.height = height
         self.board = [[0] * width for _ in range(height)]
-        # значения по умолчанию
         self.left = 10
         self.top = 10
         self.cell_size = 30
+        self.step = False
         self.cell_type = [[0] * width for _ in range(height)]
 
-    # настройка внешнего вида
     def set_view(self, left, top, cell_size):
         self.left = left
         self.top = top
         self.cell_size = cell_size
 
-    def render(self, a=None, b=None, color=''):
+    def render(self, a=None, b=None):
         for i in range(self.height):
             for j in range(self.width):
                 f = (self.left + self.cell_size * j, self.top + self.cell_size * i)
                 pygame.draw.rect(screen, WHITE, (
                     self.left + self.cell_size * j, self.top + self.cell_size * i, self.cell_size, self.cell_size), 1)
                 self.board[i][j] = f
-        if a:
-            if color == 'Green':
-                pygame.draw.rect(screen, GREEN, (self.left + self.cell_size * a, self.top + self.cell_size * b, self.cell_size - 1, self.cell_size - 1))
-                self.cell_type[b][a] = 1
-            elif color == 'Black':
-                pygame.draw.rect(screen, BLACK, (self.left + self.cell_size * a, self.top + self.cell_size * b, self.cell_size - 1, self.cell_size - 1))
-                self.cell_type[b][a] = None
+        if a is not None:
+            if self.step:
+                if self.cell_type[b][a]:
+                    pass
+                else:
+                    pygame.draw.line(screen, BLUE,
+                                     [self.left + self.cell_size * a + 2, self.top + self.cell_size * b + 2],
+                                     [self.left + self.cell_size * (a + 1) - 2,
+                                      self.top + self.cell_size * (b + 1) - 2], 2)
+                    pygame.draw.line(screen, BLUE,
+                                     [self.left + self.cell_size * (a + 1) - 2, self.top + self.cell_size * b + 2],
+                                     [self.left + self.cell_size * a + 2, self.top + self.cell_size * (b + 1) - 2], 2)
+                    self.cell_type[b][a] = 1
+                    self.step = False
+            else:
+                if self.cell_type[b][a]:
+                    pass
+                else:
+                    pygame.draw.circle(screen, RED, (
+                        self.left + self.cell_size * a + self.cell_size // 2,
+                        self.top + self.cell_size * b + self.cell_size // 2), self.cell_size // 2 - 2, 2)
+                    self.cell_type[b][a] = 1
+                    self.step = True
 
     def get_left_click(self, mouse_pos):
         cell = self.get_cell(mouse_pos)
@@ -66,42 +78,17 @@ class Board:
 
     def on_left_click(self, cell_coords):
         if cell_coords:
-            self.render(cell_coords[0], cell_coords[1], 'Green')
+            self.render(cell_coords[0], cell_coords[1])
             pygame.display.flip()
         else:
             pass
 
     def on_right_click(self, cell_coords):
         if cell_coords:
-            self.render(cell_coords[0], cell_coords[1], 'Black')
+            self.render(cell_coords[0], cell_coords[1])
             pygame.display.flip()
         else:
             pass
-
-    def alive(self, point, board):
-        x, y = point
-        counts = self.count_live_neighbors(point, board)
-        if counts == 3 or (counts == 2 and point in board):
-            return True
-        return False
-
-    def count_live_neighbors(self, point, board):
-        j = 0
-        for i in self.get_neighbors(point):
-            if i in board:
-                j = j + 1
-        return j
-
-    def get_neighbors(self, point):
-        x, y = point
-        return [((x + j), (y + i)) for i in range(-1, 2) for j in range(-1, 2) if not i == j == 0]
-
-    def play(self):
-        for i in range(self.height):
-            for j in range(self.width):
-                if self.alive((i, j), self.board)
-
-
 
 
 pygame.init()
@@ -120,10 +107,6 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 board.get_left_click(event.pos)
-            elif event.button == 3:
-                board.get_right_click(event.pos)
-        while event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                board.play()
+            # elif event.button == 3:
+            #    board.get_right_click(event.pos)
     pygame.display.flip()
-    clock.tick(fps)
