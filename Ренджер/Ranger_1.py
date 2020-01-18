@@ -177,10 +177,8 @@ class MainGun(pygame.sprite.Sprite):
 
     def checkposition(self):
         if self.rect.right > self.rightPos:
-            #self.rightPos = WIDTH - random.randint(0, WIDTH // 2)
             self.speedx = -10
         elif self.rect.left < self.leftPos:
-            #self.leftPos = random.randint(0, WIDTH // 2)
             self.speedx = 10
         if self.rect.right > WIDTH:
             self.rect.right = WIDTH
@@ -824,7 +822,6 @@ def level_3():
 def level_4():
     clock.tick(FPS)
     score = 10
-    boss = 10
     pewTime = 0
     n = 0
     background = pygame.image.load(path.join(img_dir, ANIMATION[n])).convert()
@@ -888,11 +885,26 @@ def level_4():
         if n == 7:
             n = -1
         all_sprites.draw(screen)
-
+    player.kill()
     for i in mobs:
         i.kill()
     for i in enemyBullets:
         i.kill()
+    if score <= 0:
+        boss()
+    else:
+        reset(4)
+
+
+def boss():
+    clock.tick(FPS)
+    pewTime = 0
+    boss = 10
+    n = 0
+    background = pygame.image.load(path.join(img_dir, ANIMATION[n])).convert()
+    background_rect = background.get_rect()
+    player = Player()
+    all_sprites.add(player)
     mainBoss = MainGun()
     all_sprites.add(mainBoss)
 
@@ -921,15 +933,15 @@ def level_4():
 
         hits = pygame.sprite.spritecollide(mainBoss, bullets, False)
         for _ in hits:
-            score -= 1
+            boss -= 1
 
         hits = pygame.sprite.groupcollide(enemyBullets, bullets, True, True)
 
         bulletHits = pygame.sprite.spritecollide(player, enemyBullets, False)
-        if hits or bulletHits:
+        if bulletHits:
             running = False
 
-        if score <= 0:
+        if boss <= 0:
             running = False
 
         font = pygame.font.Font(None, 30)
@@ -950,7 +962,7 @@ def level_4():
 
     mainBoss.kill()
     player.kill()
-    if score <= 0:
+    if boss <= 0:
         complete(1)
     else:
         reset(4)
