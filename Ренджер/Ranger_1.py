@@ -2,6 +2,8 @@ import os
 import pygame
 import random
 
+from pygame.sprite import Group
+
 WIDTH = 480
 HEIGHT = 600
 FPS = 60
@@ -118,7 +120,7 @@ class Meteor(pygame.sprite.Sprite):  # класс врагов 1,2 уровне�
             self.speedy = random.randrange(1, 8)
 
     def shoot(self):
-        bullet = EnemyBullet(self.rect.centerx, self.rect.bottom)
+        bullet = Bullet(self.rect.centerx, self.rect.bottom, 'enemy')
         all_sprites.add(bullet)
         enemyBullets.add(bullet)
 
@@ -153,7 +155,7 @@ class EnemyShip(pygame.sprite.Sprite):  # второй тип противник
                 self.rect.y = random.randrange(HEIGHT - self.rect.height - 200)
 
     def shoot(self):
-        bullet = EnemyBullet(self.rect.centerx, self.rect.bottom)
+        bullet = Bullet(self.rect.centerx, self.rect.bottom, 'enemy')
         all_sprites.add(bullet)
         enemyBullets.add(bullet)
 
@@ -180,12 +182,12 @@ class MainGun(pygame.sprite.Sprite):  # босс
         self.image.set_colorkey(BLACK)
 
     def shoot(self):
-        bullet = EnemyBullet(self.rect.centerx, self.rect.bottom)
+        bullet = Bullet(self.rect.centerx, self.rect.bottom, 'enemy')
         all_sprites.add(bullet)
         enemyBullets.add(bullet)
 
     def lasershoot(self):
-        bullet = Laser(self.rect.centerx, self.rect.bottom)
+        bullet = Bullet(self.rect.centerx, self.rect.bottom, 'lazer')
         all_sprites.add(bullet)
         enemyBullets.add(bullet)
 
@@ -214,52 +216,34 @@ class MainGun(pygame.sprite.Sprite):  # босс
             self.rect.left = 0
 
 
-class Bullet(pygame.sprite.Sprite): # пуля героя
-    def __init__(self, x, y):
+class Bullet(pygame.sprite.Sprite):  # пули и лазер-1 для босса
+    def __init__(self, x, y, name='hero'):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((10, 20))
-        self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
-        self.rect.bottom = y
+        self.name = name
+        if self.name == 'hero':  # устанавливаем характер пули: пуля героя, пуля врага или лазер-1 босса
+            self.rect.bottom = y
+            self.speedy = -10
+            self.image.fill(YELLOW)
+        elif self.name == 'enemy':
+            self.rect.top = y
+            self.speedy = 8
+            self.image.fill(YELLOW)
+        else:
+            self.rect.top = y
+            self.speedy = 10
+            self.image.fill(GREEN)
         self.rect.centerx = x
-        self.speedy = -10
 
     def update(self):
         self.rect.y += self.speedy
-        if self.rect.bottom < 0:
-            self.kill()
-
-
-class EnemyBullet(pygame.sprite.Sprite): # пули врагов
-    def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((10, 20))
-        self.image.fill(YELLOW)
-        self.rect = self.image.get_rect()
-        self.rect.top = y
-        self.rect.centerx = x
-        self.speedy = 8
-
-    def update(self):
-        self.rect.y += self.speedy
-        if self.rect.top > 600:
-            self.kill()
-
-
-class Laser(pygame.sprite.Sprite):  # первый тип лазера для босса-2
-    def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((10, 20))
-        self.image.fill(GREEN)
-        self.rect = self.image.get_rect()
-        self.rect.top = y
-        self.rect.centerx = x
-        self.speedy = 10
-
-    def update(self):
-        self.rect.y += self.speedy
-        if self.rect.top > 600:
-            self.kill()
+        if self.name == 'hero': # для пули героя
+            if self.rect.bottom < 0:
+                self.kill()
+        else: # для пуль врагов и лазера-1 босса
+            if self.rect.top > 600:
+                self.kill()
 
 
 class Lazer2(pygame.sprite.Sprite):  # второй тип лазера для босса-3
@@ -324,11 +308,10 @@ class Urovni:  # является классом персонажа в меню
 
         pygame.draw.circle(screen, (250, 250, 250), (self.x, HEIGHT - self.y), 50)
         self.image = pygame.Surface((50, 40))
-        player_img = pygame.image.load(path.join(img_dir, 'sheep.png')).convert()
+        player_img = pygame.image.load(os.path.join(img_dir, 'sheep.png')).convert()
         self.image = player_img
         self.image = pygame.transform.scale(player_img, (30, 50))
         self.image.set_colorkey(WHITE)
-
 
 
 def decoration():  # следующие функции нужны для оформления кат-сцен и меню
