@@ -265,6 +265,12 @@ class Urovni:
             self.y = k[1]
 
         pygame.draw.circle(screen, (250, 250, 250), (self.x, HEIGHT - self.y), 50)
+        self.image = pygame.Surface((50, 40))
+        player_img = pygame.image.load(path.join(img_dir, 'sheep.png')).convert()
+        self.image = player_img
+        self.image = pygame.transform.scale(player_img, (30, 50))
+        self.image.set_colorkey(WHITE)
+
 
 
 def decoration():
