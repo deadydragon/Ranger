@@ -16,12 +16,12 @@ YELLOW = (255, 255, 0)
 
 img_dir = path.dirname(__file__)
 
-ANIMATION = ['bg_1.png', 'bg_2.png', 'bg_3.png', 'bg_4.png',
-             'bg_5.png', 'bg_6.png', 'bg_7.png', 'bg_8.png']
+ANIMATION = ['data/bg_1.png', 'data/bg_2.png', 'data/bg_3.png', 'data/bg_4.png',
+             'data/bg_5.png', 'data/bg_6.png', 'data/bg_7.png', 'data/bg_8.png']
 
 koord = {1: (60, 60), 2: (300, 180), 3: (180, 420), 4: (300, 540)}
-koord2 = {1: ('planet.png', (550, 550), (650, 420)), 2: ('planet2.png', (550, 550), (650, 420)),
-          3: ('planet3.png', (1100, 600), (1000, 450)), 4: ('planet4.png', (530, 530), (600, 370))}
+koord2 = {1: ('data/planet.png', (550, 550), (650, 420)), 2: ('data/planet2.png', (550, 550), (650, 420)),
+          3: ('data/planet3.png', (1100, 600), (1000, 450)), 4: ('data/planet4.png', (530, 530), (600, 370))}
 
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -37,7 +37,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((50, 40))
-        player_img = pygame.image.load(path.join(img_dir, 'sheep.png')).convert()
+        player_img = pygame.image.load(path.join(img_dir, 'data/sheep.png')).convert()
         self.image = player_img
         self.image = pygame.transform.scale(player_img, (30, 50))
         self.image.set_colorkey(WHITE)
@@ -72,7 +72,7 @@ class Mob(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((30, 40))
-        mob_img = pygame.image.load(path.join(img_dir, 'meteor.jpg')).convert()
+        mob_img = pygame.image.load(path.join(img_dir, 'data/meteor.jpg')).convert()
         self.image = mob_img
         self.image = pygame.transform.scale(mob_img, (50, 45))
         self.image.set_colorkey(WHITE)
@@ -100,7 +100,7 @@ class LeftEnemyShip(pygame.sprite.Sprite):
     def __init__(self, num):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((30, 40))
-        mob_img = pygame.image.load(path.join(img_dir, 'meteor.jpg')).convert()
+        mob_img = pygame.image.load(path.join(img_dir, 'data/meteor.jpg')).convert()
         self.image = mob_img
         self.image = pygame.transform.scale(mob_img, (50, 45))
         self.image.set_colorkey(WHITE)
@@ -125,7 +125,7 @@ class RightEnemyShip(pygame.sprite.Sprite):
     def __init__(self, num):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((30, 40))
-        mob_img = pygame.image.load(path.join(img_dir, 'meteor.jpg')).convert()
+        mob_img = pygame.image.load(path.join(img_dir, 'data/meteor.jpg')).convert()
         self.image = mob_img
         self.image = pygame.transform.scale(mob_img, (50, 45))
         self.image.set_colorkey(WHITE)
@@ -150,7 +150,7 @@ class MainGun(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((50, 40))
-        player_img = pygame.image.load(path.join(img_dir, 'sheep.png')).convert()
+        player_img = pygame.image.load(path.join(img_dir, 'data/sheep.png')).convert()
         self.image = player_img
         self.image = pygame.transform.scale(player_img, (30, 50))
         self.image.set_colorkey(WHITE)
@@ -264,7 +264,7 @@ class Urovni:
             self.x = k[0]
             self.y = k[1]
 
-        image = pygame.image.load(path.join(img_dir, 'sheep.png')).convert()
+        image = pygame.image.load(path.join(img_dir, 'data/sheep.png')).convert()
         image = pygame.transform.scale(image, (95, 150))
         image_rect = image.get_rect(bottomright=(self.x + 50, HEIGHT - self.y + 60))
         image.set_colorkey(WHITE)
@@ -273,28 +273,27 @@ class Urovni:
 
 
 def decoration():
-    imagefon = pygame.image.load(path.join(img_dir, 'fon.jpg')).convert_alpha()
+    imagefon = pygame.image.load(path.join(img_dir, 'data/fon.jpg')).convert_alpha()
     imagefon = pygame.transform.scale(imagefon, (800, 900))
     imagefon_top = screen.get_height() - imagefon.get_height()
     imagefon_left = screen.get_width() // 2 - imagefon.get_width() // 2
     screen.blit(imagefon, (imagefon_left, imagefon_top))
-    image = pygame.image.load(path.join(img_dir, 'planet.png')).convert_alpha()
+    image = pygame.image.load(path.join(img_dir, 'data/planet.png')).convert_alpha()
     image = pygame.transform.scale(image, (180, 180))
     image_rect = image.get_rect(bottomright=(150, 620))
     screen.blit(image, image_rect)
-    image2 = pygame.image.load(path.join(img_dir, 'planet2.png')).convert_alpha()
+    image2 = pygame.image.load(path.join(img_dir, 'data/planet2.png')).convert_alpha()
     image2 = pygame.transform.scale(image2, (150, 150))
     image2_rect = image2.get_rect(bottomright=(370, 490))
     screen.blit(image2, image2_rect)
-    image3 = pygame.image.load(path.join(img_dir, 'planet3.png')).convert_alpha()
+    image3 = pygame.image.load(path.join(img_dir, 'data/planet3.png')).convert_alpha()
     image3 = pygame.transform.scale(image3, (360, 190))
     image3_rect = image3.get_rect(bottomright=(380, 275))
     screen.blit(image3, image3_rect)
-    image4 = pygame.image.load(path.join(img_dir, 'planet4.png')).convert_alpha()
+    image4 = pygame.image.load(path.join(img_dir, 'data/planet4.png')).convert_alpha()
     image4 = pygame.transform.scale(image4, (180, 180))
     image4_rect = image4.get_rect(bottomright=(385, 145))
     screen.blit(image4, image4_rect)
-
 
 def hero(name):
     image = pygame.image.load(name).convert_alpha()
@@ -302,6 +301,11 @@ def hero(name):
     image_rect = image.get_rect(bottomright=(390, 835))
     screen.blit(image, image_rect)
 
+def twohero(name):
+    image = pygame.image.load(name).convert_alpha()
+    image = pygame.transform.scale(image, (500, 500))
+    image_rect = image.get_rect(bottomright=(350, 500))
+    screen.blit(image, image_rect)
 
 def planet(name, kord, razmer):
     image = pygame.image.load(name).convert_alpha()
@@ -499,9 +503,12 @@ def home(num):
 def speak(num):
     lvl = num
     forplanet = koord2.get(lvl)
-    fon('fon.jpg')
+    fon('data/fon.jpg')
     planet(forplanet[0], forplanet[1], forplanet[2])
-    hero('hero4.png')
+    if lvl == 6:
+        hero('data/hero4.png')
+    else:
+        twohero('data/2hero.png')
     n = 0
     draw_txt(num, n)
     pygame.display.flip()
@@ -515,9 +522,12 @@ def speak(num):
                     n += 1
 
         forplanet = koord2.get(lvl)
-        fon('fon.jpg')
+        fon('data/fon.jpg')
         planet(forplanet[0], forplanet[1], forplanet[2])
-        hero('hero4.png')
+        if lvl == 6:
+            hero('data/hero4.png')
+        else:
+            twohero('data/2hero.png')
         if n < 5:
             draw_txt(num, n)
         else:
